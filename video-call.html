@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HearChat - Video Call</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="video-call-container">
+        <!-- Main Video -->
+        <div class="main-video">
+            <div class="caller-video">
+                <img src="asset/icon-dummy.png" alt="Caller Avatar" class="placeholder">
+                <div class="caller-info">
+                    <h3>Erlangga</h3>
+                    <p class="call-status">Connecting...</p>
+                </div>
+            </div>
+            <div class="self-video">
+                <img src="asset/icon-dummy.png" alt="Your Avatar">
+            </div>
+        </div>
+
+        <!-- Video Call Controls -->
+        <div class="video-call-controls">
+            <button class="video-call-btn switch-camera" onclick="alert('Camera switched')">
+                <i class="fas fa-camera-rotate"></i>
+            </button>
+            <button class="video-call-btn video-off" onclick="this.classList.toggle('active'); alert('Video has been ' + (this.classList.contains('active') ? 'turned off' : 'turned on'))">
+                <i class="fas fa-video-slash"></i>
+            </button>
+            <button class="video-call-btn mute" onclick="this.classList.toggle('active'); alert('Microphone has been ' + (this.classList.contains('active') ? 'muted' : 'unmuted'))">
+                <i class="fas fa-microphone-slash"></i>
+            </button>
+            <a href="index.html" class="video-call-btn end-call">
+                <i class="fas fa-phone-slash"></i>
+            </a>
+        </div>
+
+        <!-- Video Call History (Minimized) -->
+        <div class="minimized-history">
+            <button class="show-history-btn" onclick="document.querySelector('.video-call-history').classList.remove('hidden')">
+                <i class="fas fa-history"></i>
+                <span>View History</span>
+            </button>
+        </div>
+
+        <!-- Video Call History (Expanded) -->
+        <div class="video-call-history hidden">
+            <div class="history-header">
+                <h3>Recent Video Calls</h3>
+                <button class="close-history-btn" onclick="document.querySelector('.video-call-history').classList.add('hidden')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="video-call-list">
+                <li class="video-call-item incoming" onclick="makeVideoCall(this)">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>Erlangga</h4>
+                        <p><i class="fas fa-video incoming"></i> Today, 9:30 AM</p>
+                    </div>
+                    <button class="video-back-btn" onclick="event.stopPropagation(); makeVideoCall(this.closest('.video-call-item'))">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </li>
+                <li class="video-call-item outgoing" onclick="makeVideoCall(this)">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>JingkoisReal</h4>
+                        <p><i class="fas fa-video outgoing"></i> Yesterday, 7:15 PM</p>
+                    </div>
+                    <button class="video-back-btn" onclick="event.stopPropagation(); makeVideoCall(this.closest('.video-call-item'))">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </li>
+                <li class="video-call-item missed" onclick="makeVideoCall(this)">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>Kelra</h4>
+                        <p><i class="fas fa-video missed"></i> Yesterday, 1:45 PM</p>
+                    </div>
+                    <button class="video-back-btn" onclick="event.stopPropagation(); makeVideoCall(this.closest('.video-call-item'))">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // Simple function to handle video calling
+        function makeVideoCall(element) {
+            const contactName = element.querySelector('h4').textContent;
+            
+            // Store contact name for returning to chat later
+            sessionStorage.setItem('currentContact', contactName);
+            
+            // Update caller info
+            document.querySelector('.caller-info h3').textContent = contactName;
+            document.querySelector('.call-status').textContent = 'Calling...';
+            
+            // Hide the history panel
+            document.querySelector('.video-call-history').classList.add('hidden');
+            
+            // Simulate connection
+            setTimeout(function() {
+                document.querySelector('.call-status').textContent = 'Connected';
+            }, 2000);
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HearChat</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>HearChat</h2>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="asset/icon-dummy.png" alt="User Avatar">
+                </div>
+                <div class="status online"></div>
+                <div class="user-info">
+                    <h3>Jhansen</h3>
+                    <p>Active Now</p>
+                </div>
+                <a href="settings.html" class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+            <div class="contacts">
+                <h3>Chats</h3>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <ul class="contact-list">
+                    <li class="contact active">
+                        <div class="contact-avatar">
+                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                            <span class="status online"></span>
+                        </div>
+                        <div class="contact-info">
+                            <h4>Erlangga</h4>
+                            <p>Sure, I'll be there!</p>
+                        </div>
+                        <div class="contact-time">
+                            <span>10:45 AM</span>
+                            <span class="unread">3</span>
+                        </div>
+                    </li>
+                    <li class="contact">
+                        <div class="contact-avatar">
+                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                            <span class="status offline"></span>
+                        </div>
+                        <div class="contact-info">
+                            <h4>JingkoisReal</h4>
+                            <p>How's the project going?</p>
+                        </div>
+                        <div class="contact-time">
+                            <span>Yesterday</span>
+                        </div>
+                    </li>
+                    <li class="contact">
+                        <div class="contact-avatar">
+                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                            <span class="status online"></span>
+                        </div>
+                        <div class="contact-info">
+                            <h4>Kelra</h4>
+                            <p>Let's meet for coffee</p>
+                        </div>
+                        <div class="contact-time">
+                            <span>Yesterday</span>
+                        </div>
+                    </li>
+                    <li class="contact">
+                        <div class="contact-avatar">
+                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                            <span class="status away"></span>
+                        </div>
+                        <div class="contact-info">
+                            <h4>JingkoGod</h4>
+                            <p>James: Looks great!</p>
+                        </div>
+                        <div class="contact-time">
+                            <span>Wed</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Chat Main Area -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="chat-contact-info">
+                    <div class="contact-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                        <span class="status online"></span>
+                    </div>
+                    <div class="contact-info">
+                        <h4>Erlangga</h4>
+                        <p>Online • Typing...</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn"><i class="fas fa-phone"></i></button>
+                    <button class="action-btn"><i class="fas fa-video"></i></button>
+                    <button class="action-btn"><i class="fas fa-info-circle"></i></button>
+                </div>
+            </div>
+            <div class="chat-messages">
+                <div class="date-divider">
+                    <span>Today</span>
+                </div>
+                <div class="message received">
+                    <div class="message-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="message-content">
+                        <p>Hey, how's it going?</p>
+                        <span class="message-time">10:30 AM</span>
+                    </div>
+                </div>
+                <div class="message sent">
+                    <div class="message-content">
+                        <p>Hi Sarah! I'm doing well, thanks for asking. How about you?</p>
+                        <span class="message-time">10:32 AM</span>
+                    </div>
+                </div>
+                <div class="message received">
+                    <div class="message-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="message-content">
+                        <p>I'm good too! Just wondering if you're still coming to the meeting later?</p>
+                        <span class="message-time">10:34 AM</span>
+                    </div>
+                </div>
+                <div class="message sent">
+                    <div class="message-content">
+                        <p>Yes, I'll be there. What time was it again?</p>
+                        <span class="message-time">10:36 AM</span>
+                    </div>
+                </div>
+                <div class="message received">
+                    <div class="message-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="message-content">
+                        <p>It's at 2 PM in the main conference room. Don't forget to bring the presentation!</p>
+                        <span class="message-time">10:38 AM</span>
+                    </div>
+                </div>
+                <div class="message sent">
+                    <div class="message-content">
+                        <p>Perfect, I've got everything ready.</p>
+                        <span class="message-time">10:40 AM</span>
+                    </div>
+                </div>
+                <div class="message received">
+                    <div class="message-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="message-content">
+                        <p>Great! See you there!</p>
+                        <span class="message-time">10:42 AM</span>
+                    </div>
+                </div>
+                <div class="message sent">
+                    <div class="message-content">
+                        <p>Sure, I'll be there!</p>
+                        <span class="message-time">10:45 AM</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="input-actions">
+                    <button class="action-btn"><i class="fas fa-paperclip"></i></button>
+                    <button class="action-btn"><i class="fas fa-image"></i></button>
+                </div>
+                <div class="message-input">
+                    <input type="text" placeholder="Type a message...">
+                </div>
+                <div class="send-actions">
+                    <button class="action-btn"><i class="fas fa-microphone"></i></button>
+                    <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

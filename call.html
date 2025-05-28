@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HearChat - Call</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="call-container">
+        <!-- Call Header -->
+        <div class="call-header">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <h2>Call</h2>
+        </div>
+
+        <!-- Active Call -->
+        <div class="active-call">
+            <div class="caller-info">
+                <div class="caller-avatar">
+                    <img src="asset/icon-dummy.png" alt="Caller Avatar">
+                </div>
+                <h3 class="caller-name">Erlangga</h3>
+                <p class="call-status">Calling...</p>
+                <p class="call-duration">00:00</p>
+            </div>
+
+            <!-- Call Controls -->
+            <div class="call-controls">
+                <button class="call-btn speaker">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Speaker</span>
+                </button>
+                <button class="call-btn mute">
+                    <i class="fas fa-microphone-slash"></i>
+                    <span>Mute</span>
+                </button>
+                <button class="call-btn add-call">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Call</span>
+                </button>
+                <a href="index.html" class="call-btn end-call">
+                    <i class="fas fa-phone-slash"></i>
+                    <span>End</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Call History -->
+        <div class="call-history">
+            <h3>Recent Calls</h3>
+            <ul class="call-list">
+                <li class="call-item incoming">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>Erlangga</h4>
+                        <p><i class="fas fa-phone-alt incoming"></i> Today, 10:45 AM</p>
+                    </div>
+                    <button class="call-back-btn"><i class="fas fa-phone-alt"></i></button>
+                </li>
+                <li class="call-item outgoing">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>JingkoisReal</h4>
+                        <p><i class="fas fa-phone-alt outgoing"></i> Yesterday, 8:30 PM</p>
+                    </div>
+                    <button class="call-back-btn"><i class="fas fa-phone-alt"></i></button>
+                </li>
+                <li class="call-item missed">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>Kelra</h4>
+                        <p><i class="fas fa-phone-alt missed"></i> Yesterday, 2:15 PM</p>
+                    </div>
+                    <button class="call-back-btn"><i class="fas fa-phone-alt"></i></button>
+                </li>
+                <li class="call-item outgoing">
+                    <div class="call-item-avatar">
+                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
+                    </div>
+                    <div class="call-item-info">
+                        <h4>JingkoGod</h4>
+                        <p><i class="fas fa-phone-alt outgoing"></i> Wednesday, 5:20 PM</p>
+                    </div>
+                    <button class="call-back-btn"><i class="fas fa-phone-alt"></i></button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- New Call Button -->
+        <button class="new-call-btn">
+            <i class="fas fa-phone-alt"></i>
+        </button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

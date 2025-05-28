@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HearChat - Contact Info</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="contact-info-container">
+        <!-- Header -->
+        <div class="contact-info-header">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <h2>Contact Info</h2>
+        </div>
+
+        <!-- Contact Profile -->
+        <div class="contact-profile">
+            <div class="profile-avatar large">
+                <img src="asset/icon-dummy.png" alt="Contact Avatar">
+            </div>
+            <h3 class="profile-name">Erlangga</h3>
+            <p class="profile-status">Online</p>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="action-btn">
+                    <i class="fas fa-message"></i>
+                    <span>Message</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Audio</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-video"></i>
+                    <span>Video</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact Details -->
+        <div class="contact-details">
+            <div class="detail-section">
+                <h4>About</h4>
+                <p>Available</p>
+            </div>
+
+            <div class="detail-section">
+                <h4>Phone</h4>
+                <p>+62 812 3456 7890</p>
+                <div class="detail-actions">
+                    <button class="detail-action-btn"><i class="fas fa-phone-alt"></i></button>
+                    <button class="detail-action-btn"><i class="fas fa-video"></i></button>
+                    <button class="detail-action-btn"><i class="fas fa-comment"></i></button>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4>Media, Links and Docs</h4>
+                <div class="media-preview">
+                    <div class="media-item">
+                        <img src="asset/icon-dummy.png" alt="Media preview">
+                    </div>
+                    <div class="media-item">
+                        <img src="asset/icon-dummy.png" alt="Media preview">
+                    </div>
+                    <div class="media-item">
+                        <img src="asset/icon-dummy.png" alt="Media preview">
+                    </div>
+                    <button class="more-media-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="contact-actions">
+            <button class="contact-action-btn mute">
+                <i class="fas fa-bell-slash"></i>
+                <span>Mute Notifications</span>
+                <div class="toggle-switch">
+                    <div class="toggle-slider"></div>
+                </div>
+            </button>
+            <button class="contact-action-btn starred">
+                <i class="fas fa-star"></i>
+                <span>Starred Messages</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="contact-action-btn disappear">
+                <i class="fas fa-hourglass-end"></i>
+                <span>Disappearing Messages</span>
+                <p class="action-status">Off</p>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="contact-action-btn encrypt">
+                <i class="fas fa-lock"></i>
+                <span>Encryption</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="contact-action-btn block negative">
+                <i class="fas fa-ban"></i>
+                <span>Block Erlangga</span>
+            </button>
+            <button class="contact-action-btn report negative">
+                <i class="fas fa-thumbs-down"></i>
+                <span>Report Erlangga</span>
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
