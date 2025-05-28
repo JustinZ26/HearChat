@@ -1,0 +1,57 @@
+{
+  "user": {
+    "name": "Jhansen",
+    "avatar": "asset/icon-dummy.png",
+    "status": "online"
+  },
+  "contacts": [
+    {
+      "name": "Erlangga",
+      "avatar": "asset/icon-dummy.png",
+      "status": "online",
+      "lastMessage": "Sure, I'll be there!",
+      "time": "10:45 AM",
+      "unread": 3
+    },
+    {
+      "name": "JingkoisReal",
+      "avatar": "asset/icon-dummy.png",
+      "status": "offline",
+      "lastMessage": "How's the project going?",
+      "time": "Yesterday"
+    },
+    {
+      "name": "Kelra",
+      "avatar": "asset/icon-dummy.png",
+      "status": "offline",
+      "lastMessage": "Let's meet for coffee",
+      "time": "Yesterday"
+    },
+    {
+      "name": "JingkoGod",
+      "avatar": "asset/icon-dummy.png",
+      "status": "offline",
+      "lastMessage": "James: looks great!",
+      "time": "Wed"
+    }
+    
+  ],
+  "messages": {
+    "Erlangga": [
+      { "from": "them", "text": "Hey, how's it going?", "time": "10:30 AM" },
+      { "from": "me",   "text": "Hi Erlangga! I'm doing well…", "time": "10:32 AM" }
+    ],
+    "JingkoisReal": [
+      { "from": "them", "text": "Hey, how's it going?", "time": "10:30 AM" },
+      { "from": "me",   "text": "Hi JingkoisReal! I'm doing well…", "time": "10:32 AM" }
+    ],
+    "Kelra": [
+      { "from": "them", "text": "Hey, how's it going?", "time": "10:30 AM" },
+      { "from": "me",   "text": "Hi Kelra! I'm doing well…", "time": "10:32 AM" }
+    ],
+    "JingkoGod": [
+      { "from": "them", "text": "Hey, how's it going?", "time": "10:30 AM" },
+      { "from": "me",   "text": "Hi JingkoGod! I'm doing well…", "time": "10:32 AM" }
+    ]
+  }
+}
