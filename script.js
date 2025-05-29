@@ -2,7 +2,7 @@ let db = null;
 let currentContact = null;
 
 async function init() {
-  const res = await fetch('data.json');
+  const res = await fetch('data.json'); // import data from JSON file
   db = await res.json();
   renderUserProfile(db.user);
   renderContacts(db.contacts);
@@ -63,15 +63,20 @@ function setupContactClicks() {
   });
 }
 
-function selectContact(name) {
+async function selectContact(name) {
+  const res = await fetch('data.json'); // re-fetch data
+  db = await res.json();
+
   currentContact = name;
   // header
   document.querySelector('.chat-header .contact-info h4').textContent = name;
-  const c = db.contacts.find(c=>c.name===name);
+  const c = db.contacts.find(c => c.name === name);
   const statusEl = document.querySelector('.chat-header .contact-info p');
   statusEl.textContent = c.status === 'online' ? 'Online • Typing...' : c.status;
+
   renderMessages(name);
 }
+
 
 function renderMessages(name) {
   const msgs = db.messages[name] || (db.messages[name] = []);
@@ -89,6 +94,7 @@ function renderMessages(name) {
     `;
     cont.appendChild(div);
   });
+  // scroll to bottom
   cont.scrollTop = cont.scrollHeight;
 }
 
@@ -116,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     };
-    
+ 
     handleMobileMenu();
     window.addEventListener('resize', handleMobileMenu);
     
@@ -154,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendBtn = document.querySelector('.send-btn');
     const messageInput = document.querySelector('.message-input input');
     
-    function sendMessage() {
+    async function sendMessage() {
         const messageText = messageInput.value.trim();
         if (messageText) {
             // Create new message element
@@ -185,6 +191,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // ⛅ Send message to backend API
+            await fetch('/api/save-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    to: currentContact, // change this based on active chat
+                    from: 'me',
+                    text: messageText,
+                    time: timeString
+                })
+            });
+
+            // 💫 Re-fetch updated data & re-render messages
+            const res = await fetch('data.json');
+            db = await res.json();
+            renderMessages(currentContact);
             
             // Simulate reply after 1-2 seconds
             setTimeout(simulateReply, Math.random() * 1000 + 1000);
@@ -206,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Simulate reply from the active contact
-    function simulateReply() {
+    async function simulateReply() {
         const replies = [
             "That sounds great!",
             "I'll check and get back to you.",
@@ -252,6 +277,24 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // ⛅ Send message to backend API
+            await fetch('/api/save-message-reply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    from: currentContact,
+                    text: randomReply,
+                    time: timeString
+                })
+            });
+
+            // 💫 Re-fetch updated data & re-render messages
+            const res = await fetch('data.json');
+            db = await res.json();
+            renderMessages(currentContact);
         }
     }
     
