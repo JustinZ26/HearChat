@@ -102,6 +102,35 @@ function getAvatar(name) {
     return db.contacts.find(c=>c.name===name).avatar;
 }
 
+function speakText(text) { // TTS model for web
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.7;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    function setVoiceAndSpeak() {
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(voice =>
+            voice.name.includes("Female") || voice.name.includes("Google UK English Female")
+        );
+        if (femaleVoice) {
+            utterance.voice = femaleVoice;
+        }
+        speechSynthesis.speak(utterance);
+    }
+
+    // Voices
+    if (speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.onvoiceschanged = () => {
+            setVoiceAndSpeak();
+        };
+    } else {
+        setVoiceAndSpeak();
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Add toggle functionality for mobile menu
     const handleMobileMenu = function() {
@@ -192,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // ⛅ Send message to backend API
+            // Send message to backend API
             await fetch('/api/save-message', {
                 method: 'POST',
                 headers: {
@@ -206,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
 
-            // 💫 Re-fetch updated data & re-render messages
+            // Re-fetch updated data & re-render messages
             const res = await fetch('data.json');
             db = await res.json();
             renderMessages(currentContact);
@@ -278,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // ⛅ Send message to backend API
+            // Send message to backend API
             await fetch('/api/save-message-reply', {
                 method: 'POST',
                 headers: {
