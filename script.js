@@ -316,9 +316,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Microphone button functionality
     const microphoneBtn = document.querySelector('.send-actions .action-btn');
+
     if (microphoneBtn) {
-        microphoneBtn.addEventListener('click', function() {
-            alert('Voice message feature clicked');
+        microphoneBtn.addEventListener('click', function () {
+            // Check for browser compatibility
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Your browser doesn't support speech recognition.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+            console.log('Listening...');
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                console.log('Transcribed:', transcript);
+                messageInput.value = transcript; // Puts it into the message box
+            };
+
+            recognition.onerror = function (event) {
+                console.error('Speech recognition error:', event.error);
+                alert('Failed to record voice: ' + event.error);
+            };
+
+            recognition.onend = function () {
+                console.log('Recording ended');
+            };
         });
     }
     
