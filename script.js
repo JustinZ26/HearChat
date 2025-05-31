@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
             recognition.maxAlternatives = 1;
 
             recognition.start();
+            microphoneBtn.classList.add('recording'); // add class for visual feedback
             console.log('Listening...');
 
             recognition.onresult = function (event) {
@@ -343,10 +344,12 @@ document.addEventListener('DOMContentLoaded', function() {
             recognition.onerror = function (event) {
                 console.error('Speech recognition error:', event.error);
                 alert('Failed to record voice: ' + event.error);
+                microphoneBtn.classList.remove('recording'); // When stopping
             };
 
             recognition.onend = function () {
                 console.log('Recording ended');
+                microphoneBtn.classList.remove('recording'); // When stopping
             };
         });
     }

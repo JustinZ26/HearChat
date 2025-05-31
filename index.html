@@ -34,59 +34,7 @@
                     <input type="text" placeholder="Search...">
                 </div>
                 <ul class="contact-list">
-                    <!-- <li class="contact active">
-                        <div class="contact-avatar">
-                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                            <span class="status online"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h4>Erlangga</h4>
-                            <p>Sure, I'll be there!</p>
-                        </div>
-                        <div class="contact-time">
-                            <span>10:45 AM</span>
-                            <span class="unread">3</span>
-                        </div>
-                    </li>
-                    <li class="contact">
-                        <div class="contact-avatar">
-                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                            <span class="status offline"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h4>JingkoisReal</h4>
-                            <p>How's the project going?</p>
-                        </div>
-                        <div class="contact-time">
-                            <span>Yesterday</span>
-                        </div>
-                    </li>
-                    <li class="contact">
-                        <div class="contact-avatar">
-                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                            <span class="status online"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h4>Kelra</h4>
-                            <p>Let's meet for coffee</p>
-                        </div>
-                        <div class="contact-time">
-                            <span>Yesterday</span>
-                        </div>
-                    </li>
-                    <li class="contact">
-                        <div class="contact-avatar">
-                            <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                            <span class="status away"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h4>JingkoGod</h4>
-                            <p>James: Looks great!</p>
-                        </div>
-                        <div class="contact-time">
-                            <span>Wed</span>
-                        </div>
-                    </li> -->
+                    
                 </ul>
             </div>
         </div>
@@ -111,69 +59,7 @@
                 </div>
             </div>
             <div class="chat-messages">
-                <!-- <div class="date-divider">
-                    <span>Today</span>
-                </div>
-                <div class="message received">
-                    <div class="message-avatar">
-                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                    </div>
-                    <div class="message-content">
-                        <p>Hey, how's it going?</p>
-                        <span class="message-time">10:30 AM</span>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        <p>Hi Sarah! I'm doing well, thanks for asking. How about you?</p>
-                        <span class="message-time">10:32 AM</span>
-                    </div>
-                </div>
-                <div class="message received">
-                    <div class="message-avatar">
-                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                    </div>
-                    <div class="message-content">
-                        <p>I'm good too! Just wondering if you're still coming to the meeting later?</p>
-                        <span class="message-time">10:34 AM</span>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        <p>Yes, I'll be there. What time was it again?</p>
-                        <span class="message-time">10:36 AM</span>
-                    </div>
-                </div>
-                <div class="message received">
-                    <div class="message-avatar">
-                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                    </div>
-                    <div class="message-content">
-                        <p>It's at 2 PM in the main conference room. Don't forget to bring the presentation!</p>
-                        <span class="message-time">10:38 AM</span>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        <p>Perfect, I've got everything ready.</p>
-                        <span class="message-time">10:40 AM</span>
-                    </div>
-                </div>
-                <div class="message received">
-                    <div class="message-avatar">
-                        <img src="asset/icon-dummy.png" alt="Contact Avatar">
-                    </div>
-                    <div class="message-content">
-                        <p>Great! See you there!</p>
-                        <span class="message-time">10:42 AM</span>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        <p>Sure, I'll be there!</p>
-                        <span class="message-time">10:45 AM</span>
-                    </div>
-                </div> -->
+
             </div>
             <div class="chat-input">
                 <div class="input-actions">
@@ -191,5 +77,28 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <style>
+        /* Highlight mic button when recording */
+        .send-actions .action-btn.recording {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            animation: pulse 1s infinite ease-in-out;
+        }
+
+        /*Pulse animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+            }
+        }
+
+    </style>
 </body>
 </html>
