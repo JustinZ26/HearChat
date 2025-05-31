@@ -2,104 +2,104 @@ let db = null;
 let currentContact = null;
 
 async function init() {
-  const res = await fetch('data.json'); // import data from JSON file
-  db = await res.json();
-  renderUserProfile(db.user);
-  renderContacts(db.contacts);
-  setupContactClicks();
-  // auto‑select first
-  if (db.contacts.length) selectContact(db.contacts[0].name);
+    const res = await fetch('data.json'); // import data from JSON file
+    db = await res.json();
+    renderUserProfile(db.user);
+    renderContacts(db.contacts);
+    setupContactClicks();
+    // auto‑select first
+    if (db.contacts.length) selectContact(db.contacts[0].name);
 }
 document.addEventListener('DOMContentLoaded', init);
 
 function renderUserProfile(user) {
-  document.querySelector('.user-info h3').textContent = user.name;
-  document.querySelector('.user-profile .avatar img').src = user.avatar;
-  document.querySelector('.user-profile .status').className = 'status ' + user.status;
+    document.querySelector('.user-info h3').textContent = user.name;
+    document.querySelector('.user-profile .avatar img').src = user.avatar;
+    document.querySelector('.user-profile .status').className = 'status ' + user.status;
 }
 
 function renderContacts(contacts) {
-  const list = document.querySelector('.contact-list');
-  list.innerHTML = '';
-  contacts.forEach(c => {
-    const li = document.createElement('li');
-    li.className = 'contact';
-    if (c.unread) li.classList.add('has-unread');
-    li.dataset.name = c.name;
-    li.innerHTML = `
-      <div class="contact-avatar">
-        <img src="${c.avatar}" alt="${c.name}">
-        <span class="status ${c.status}"></span>
-      </div>
-      <div class="contact-info">
-        <h4>${c.name}</h4>
-        <p>${c.lastMessage}</p>
-      </div>
-      <div class="contact-time">
-        <span>${c.time}</span>
-        ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}
-      </div>
-    `;
-    list.appendChild(li);
-  });
+    const list = document.querySelector('.contact-list');
+    list.innerHTML = '';
+    contacts.forEach(c => {
+        const li = document.createElement('li');
+        li.className = 'contact';
+        if (c.unread) li.classList.add('has-unread');
+        li.dataset.name = c.name;
+        li.innerHTML = `
+        <div class="contact-avatar">
+            <img src="${c.avatar}" alt="${c.name}">
+            <span class="status ${c.status}"></span>
+        </div>
+        <div class="contact-info">
+            <h4>${c.name}</h4>
+            <p>${c.lastMessage}</p>
+        </div>
+        <div class="contact-time">
+            <span>${c.time}</span>
+            ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}
+        </div>
+        `;
+        list.appendChild(li);
+    });
 }
 
 function setupContactClicks() {
-  document.querySelector('.contact-list').addEventListener('click', e => {
-    const li = e.target.closest('.contact');
-    if (!li) return;
-    // clear unread badge
-    const idx = db.contacts.findIndex(c => c.name === li.dataset.name);
-    if (db.contacts[idx].unread) {
-      db.contacts[idx].unread = 0;
-      // update DOM
-      const badge = li.querySelector('.unread');
-      if (badge) badge.remove();
-    }
-    // active styling
-    document.querySelectorAll('.contact').forEach(c=>c.classList.remove('active'));
-    li.classList.add('active');
-    selectContact(li.dataset.name);
-  });
+    document.querySelector('.contact-list').addEventListener('click', e => {
+        const li = e.target.closest('.contact');
+        if (!li) return;
+        // clear unread badge
+        const idx = db.contacts.findIndex(c => c.name === li.dataset.name);
+        if (db.contacts[idx].unread) {
+        db.contacts[idx].unread = 0;
+        // update DOM
+        const badge = li.querySelector('.unread');
+        if (badge) badge.remove();
+        }
+        // active styling
+        document.querySelectorAll('.contact').forEach(c=>c.classList.remove('active'));
+        li.classList.add('active');
+        selectContact(li.dataset.name);
+    });
 }
 
 async function selectContact(name) {
-  const res = await fetch('data.json'); // re-fetch data
-  db = await res.json();
+    const res = await fetch('data.json'); // re-fetch data
+    db = await res.json();
 
-  currentContact = name;
-  // header
-  document.querySelector('.chat-header .contact-info h4').textContent = name;
-  const c = db.contacts.find(c => c.name === name);
-  const statusEl = document.querySelector('.chat-header .contact-info p');
-  statusEl.textContent = c.status === 'online' ? 'Online • Typing...' : c.status;
+    currentContact = name;
+    // header
+    document.querySelector('.chat-header .contact-info h4').textContent = name;
+    const c = db.contacts.find(c => c.name === name);
+    const statusEl = document.querySelector('.chat-header .contact-info p');
+    statusEl.textContent = c.status === 'online' ? 'Online • Typing...' : c.status;
 
-  renderMessages(name);
+    renderMessages(name);
 }
 
 
 function renderMessages(name) {
-  const msgs = db.messages[name] || (db.messages[name] = []);
-  const cont = document.querySelector('.chat-messages');
-  cont.innerHTML = '';
-  msgs.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
-    div.innerHTML = `
-      ${m.from==='them'? `<div class="message-avatar"><img src="${getAvatar(name)}"></div>`: ''}
-      <div class="message-content">
-        <p>${m.text}</p>
-        <span class="message-time">${m.time}</span>
-      </div>
-    `;
-    cont.appendChild(div);
-  });
-  // scroll to bottom
-  cont.scrollTop = cont.scrollHeight;
+    const msgs = db.messages[name] || (db.messages[name] = []);
+    const cont = document.querySelector('.chat-messages');
+    cont.innerHTML = '';
+    msgs.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
+        div.innerHTML = `
+        ${m.from==='them'? `<div class="message-avatar"><img src="${getAvatar(name)}"></div>`: ''}
+        <div class="message-content">
+            <p>${m.text}</p>
+            <span class="message-time">${m.time}</span>
+        </div>
+        `;
+        cont.appendChild(div);
+    });
+    // scroll to bottom
+    cont.scrollTop = cont.scrollHeight;
 }
 
 function getAvatar(name) {
-  return db.contacts.find(c=>c.name===name).avatar;
+    return db.contacts.find(c=>c.name===name).avatar;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
