@@ -1,3 +1,107 @@
+let db = null;
+let currentContact = null;
+
+async function init() {
+  const res = await fetch('data.json'); // import data from JSON file
+  db = await res.json();
+  renderUserProfile(db.user);
+  renderContacts(db.contacts);
+  setupContactClicks();
+  // auto‑select first
+  if (db.contacts.length) selectContact(db.contacts[0].name);
+}
+document.addEventListener('DOMContentLoaded', init);
+
+function renderUserProfile(user) {
+  document.querySelector('.user-info h3').textContent = user.name;
+  document.querySelector('.user-profile .avatar img').src = user.avatar;
+  document.querySelector('.user-profile .status').className = 'status ' + user.status;
+}
+
+function renderContacts(contacts) {
+  const list = document.querySelector('.contact-list');
+  list.innerHTML = '';
+  contacts.forEach(c => {
+    const li = document.createElement('li');
+    li.className = 'contact';
+    if (c.unread) li.classList.add('has-unread');
+    li.dataset.name = c.name;
+    li.innerHTML = `
+      <div class="contact-avatar">
+        <img src="${c.avatar}" alt="${c.name}">
+        <span class="status ${c.status}"></span>
+      </div>
+      <div class="contact-info">
+        <h4>${c.name}</h4>
+        <p>${c.lastMessage}</p>
+      </div>
+      <div class="contact-time">
+        <span>${c.time}</span>
+        ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}
+      </div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function setupContactClicks() {
+  document.querySelector('.contact-list').addEventListener('click', e => {
+    const li = e.target.closest('.contact');
+    if (!li) return;
+    // clear unread badge
+    const idx = db.contacts.findIndex(c => c.name === li.dataset.name);
+    if (db.contacts[idx].unread) {
+      db.contacts[idx].unread = 0;
+      // update DOM
+      const badge = li.querySelector('.unread');
+      if (badge) badge.remove();
+    }
+    // active styling
+    document.querySelectorAll('.contact').forEach(c=>c.classList.remove('active'));
+    li.classList.add('active');
+    selectContact(li.dataset.name);
+  });
+}
+
+async function selectContact(name) {
+  const res = await fetch('data.json'); // re-fetch data
+  db = await res.json();
+
+  currentContact = name;
+  // header
+  document.querySelector('.chat-header .contact-info h4').textContent = name;
+  const c = db.contacts.find(c => c.name === name);
+  const statusEl = document.querySelector('.chat-header .contact-info p');
+  statusEl.textContent = c.status === 'online' ? 'Online • Typing...' : c.status;
+
+  renderMessages(name);
+}
+
+
+function renderMessages(name) {
+  const msgs = db.messages[name] || (db.messages[name] = []);
+  const cont = document.querySelector('.chat-messages');
+  cont.innerHTML = '';
+  msgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
+    div.innerHTML = `
+      ${m.from==='them'? `<div class="message-avatar"><img src="${getAvatar(name)}"></div>`: ''}
+      <div class="message-content">
+        <p>${m.text}</p>
+        <span class="message-time">${m.time}</span>
+      </div>
+    `;
+    cont.appendChild(div);
+  });
+  // scroll to bottom
+  cont.scrollTop = cont.scrollHeight;
+}
+
+function getAvatar(name) {
+  return db.contacts.find(c=>c.name===name).avatar;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Add toggle functionality for mobile menu
     const handleMobileMenu = function() {
@@ -18,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     };
-    
+ 
     handleMobileMenu();
     window.addEventListener('resize', handleMobileMenu);
     
@@ -49,12 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+
     
     // Send button functionality
     const sendBtn = document.querySelector('.send-btn');
     const messageInput = document.querySelector('.message-input input');
     
-    function sendMessage() {
+    async function sendMessage() {
         const messageText = messageInput.value.trim();
         if (messageText) {
             // Create new message element
@@ -85,6 +191,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // ⛅ Send message to backend API
+            await fetch('/api/save-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    to: currentContact, // change this based on active chat
+                    from: 'me',
+                    text: messageText,
+                    time: timeString
+                })
+            });
+
+            // 💫 Re-fetch updated data & re-render messages
+            const res = await fetch('data.json');
+            db = await res.json();
+            renderMessages(currentContact);
             
             // Simulate reply after 1-2 seconds
             setTimeout(simulateReply, Math.random() * 1000 + 1000);
@@ -106,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Simulate reply from the active contact
-    function simulateReply() {
+    async function simulateReply() {
         const replies = [
             "That sounds great!",
             "I'll check and get back to you.",
@@ -152,6 +277,24 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // ⛅ Send message to backend API
+            await fetch('/api/save-message-reply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    from: currentContact,
+                    text: randomReply,
+                    time: timeString
+                })
+            });
+
+            // 💫 Re-fetch updated data & re-render messages
+            const res = await fetch('data.json');
+            db = await res.json();
+            renderMessages(currentContact);
         }
     }
     
