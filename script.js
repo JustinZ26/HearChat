@@ -9,6 +9,7 @@ async function init() {
     setupContactClicks();
     // auto‑select first
     if (db.contacts.length) selectContact(db.contacts[0].name);
+    startListening() // starting voice command feature
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -101,12 +102,89 @@ function renderMessages(name) {
 function getAvatar(name) {
     return db.contacts.find(c=>c.name===name).avatar;
 }
+// -----------------------------------------------------------------------------------------------
+//need fixing ASAP
+let recognition;
+
+function startListening() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return alert("Speech Recognition not supported.");
+
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript.toLowerCase();
+        console.log('Command:', command);
+        handleVoiceCommand(command); // ⬅️ This is where you control the app
+    };
+
+    recognition.onend = () => {
+        // Restart to simulate background listening
+        startListening();
+    };
+
+    recognition.onerror = (e) => {
+        console.error("Error:", e.error);
+    };
+
+    recognition.start();
+}
+
+function handleVoiceCommand(command) {
+    if (command.includes("go to message a")) {
+        speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it's my cat'");
+    }
+    if (command.includes("reply")) {
+        speakText("Recording your reply...");
+        startReplyMode();
+    }
+}
+
+function startReplyMode() {
+    recognition.stop(); // stop passive listening
+
+    const replyRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    replyRecognition.lang = 'en-US';
+    replyRecognition.interimResults = false;
+
+    replyRecognition.onresult = (event) => {
+        const replyText = event.results[0][0].transcript;
+        speakText(`Do you want to reply with "${replyText}"? Say yes or no.`);
+
+        waitForYesNo(replyText);
+    };
+
+    replyRecognition.start();
+}
+
+function waitForYesNo(replyText) {
+    const confirmRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    confirmRecog.lang = 'en-US';
+    confirmRecog.interimResults = false;
+
+    confirmRecog.onresult = (event) => {
+        const answer = event.results[0][0].transcript.toLowerCase();
+        if (answer.includes("yes")) {
+            speakText("Sending reply now");
+            sendMessageFromVoice(replyText);
+        } else {
+            speakText("Okay, reply cancelled.");
+        }
+        setTimeout(() => startListening(), 2000); // Go back to passive mode
+    };
+
+    confirmRecog.start();
+}
+// --------------------------------------------------------------------------------------------------
 
 function speakText(text) { // TTS model for web
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 0.7;
-    utterance.pitch = 1;
+    utterance.pitch = 1.1;
     utterance.volume = 1;
 
     function setVoiceAndSpeak() {
@@ -320,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
 
-            // 💫 Re-fetch updated data & re-render messages
+            // Re-fetch updated data & re-render messages
             const res = await fetch('data.json');
             db = await res.json();
             renderMessages(currentContact);
