@@ -9,7 +9,7 @@ async function init() {
     setupContactClicks();
     // auto‑select first
     if (db.contacts.length) selectContact(db.contacts[0].name);
-    startListening() // starting voice command feature
+    //startListening() // starting voice command feature
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -104,6 +104,36 @@ function getAvatar(name) {
 }
 // -----------------------------------------------------------------------------------------------
 //need fixing ASAP
+let pressTimer;
+
+document.body.addEventListener('mousedown', () => {
+    pressTimer = setTimeout(() => {
+        console.log("Long press detected. Starting voice command...");
+        startListening();
+    }, 1000); // 1 second hold
+});
+
+document.body.addEventListener('mouseup', () => {
+    clearTimeout(pressTimer); // Cancel if released early
+});
+
+document.body.addEventListener('mouseleave', () => {
+    clearTimeout(pressTimer); // Cancel if mouse leaves screen
+});
+
+document.body.addEventListener('touchstart', () => {
+    pressTimer = setTimeout(() => {
+        console.log("Long press detected. Starting voice command...");
+        startListening();
+    }, 1000);
+});
+
+document.body.addEventListener('touchend', () => {
+    clearTimeout(pressTimer);
+});
+
+
+
 let recognition;
 
 function startListening() {
@@ -118,12 +148,7 @@ function startListening() {
     recognition.onresult = (event) => {
         const command = event.results[0][0].transcript.toLowerCase();
         console.log('Command:', command);
-        handleVoiceCommand(command); // ⬅️ This is where you control the app
-    };
-
-    recognition.onend = () => {
-        // Restart to simulate background listening
-        startListening();
+        handleVoiceCommand(command);
     };
 
     recognition.onerror = (e) => {
@@ -137,55 +162,86 @@ function handleVoiceCommand(command) {
     if (command.includes("go to message a")) {
         speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it's my cat'");
     }
-    if (command.includes("reply")) {
+
+    else if (command.includes("reply")) {
         speakText("Recording your reply...");
         startReplyMode();
     }
 }
 
 function startReplyMode() {
-    recognition.stop(); // stop passive listening
+    recognition && recognition.abort(); // Cancel base recognition
 
     const replyRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     replyRecognition.lang = 'en-US';
     replyRecognition.interimResults = false;
+    replyRecognition.continuous = false;
 
     replyRecognition.onresult = (event) => {
         const replyText = event.results[0][0].transcript;
-        speakText(`Do you want to reply with "${replyText}"? Say yes or no.`);
+        console.log("Reply captured:", replyText);
 
-        waitForYesNo(replyText);
+        // Stop reply recognition before moving on
+        replyRecognition.stop();
+
+        // Now TTS, then confirm
+        speakText(`Do you want to reply with "${replyText}"? Say yes or no.`, () => {
+            waitForYesNo(replyText);
+        });
+    };
+
+    replyRecognition.onerror = (e) => {
+        console.error("Reply error:", e.error);
+    };
+
+    replyRecognition.onend = () => {
+        console.log("Reply recognition ended.");
     };
 
     replyRecognition.start();
 }
 
+
+
 function waitForYesNo(replyText) {
     const confirmRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     confirmRecog.lang = 'en-US';
     confirmRecog.interimResults = false;
+    confirmRecog.continuous = false;
 
     confirmRecog.onresult = (event) => {
         const answer = event.results[0][0].transcript.toLowerCase();
+        console.log("Confirmation answer:", answer);
+
         if (answer.includes("yes")) {
             speakText("Sending reply now");
-            sendMessageFromVoice(replyText);
+            // sendMessageFromVoice(replyText);
         } else {
             speakText("Okay, reply cancelled.");
         }
-        setTimeout(() => startListening(), 2000); // Go back to passive mode
+    };
+
+    confirmRecog.onerror = (e) => {
+        console.error("Confirmation error:", e.error);
     };
 
     confirmRecog.start();
 }
-// --------------------------------------------------------------------------------------------------
 
-function speakText(text) { // TTS model for web
+
+
+function speakText(text, onComplete) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 0.7;
     utterance.pitch = 1.1;
     utterance.volume = 1;
+
+    utterance.onend = () => {
+        if (typeof onComplete === 'function') {
+            onComplete();
+        }
+    };
 
     function setVoiceAndSpeak() {
         const voices = window.speechSynthesis.getVoices();
@@ -198,7 +254,6 @@ function speakText(text) { // TTS model for web
         speechSynthesis.speak(utterance);
     }
 
-    // Voices
     if (speechSynthesis.getVoices().length === 0) {
         speechSynthesis.onvoiceschanged = () => {
             setVoiceAndSpeak();
@@ -207,6 +262,8 @@ function speakText(text) { // TTS model for web
         setVoiceAndSpeak();
     }
 }
+
+
 
 
 document.addEventListener('DOMContentLoaded', function() {

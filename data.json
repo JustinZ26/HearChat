@@ -9,8 +9,8 @@
       "name": "Erlangga",
       "avatar": "asset/icon-dummy.png",
       "status": "online",
-      "lastMessage": "That sounds great!",
-      "time": "11:35 AM",
+      "lastMessage": "I'll check and get back to you.",
+      "time": "4:58 PM",
       "unread": 3
     },
     {
@@ -46,6 +46,21 @@
         "from": "me",
         "text": "Hi Erlangga! I'm doing well…",
         "time": "10:32 AM"
+      },
+      {
+        "from": "me",
+        "text": "ok so this code",
+        "time": "4:57 PM"
+      },
+      {
+        "from": "me",
+        "text": "hi",
+        "time": "4:58 PM"
+      },
+      {
+        "from": "them",
+        "text": "I'll check and get back to you.",
+        "time": "4:58 PM"
       }
     ],
     "JingkoisReal": [
