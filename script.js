@@ -9,7 +9,11 @@ async function init() {
     setupContactClicks();
     // auto‑select first
     if (db.contacts.length) selectContact(db.contacts[0].name);
-    //startListening() // starting voice command feature
+    
+    waitForVoices().then(() => {
+        announceUnreadMessages(db.contacts);
+    });
+
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -93,6 +97,12 @@ function renderMessages(name) {
             <span class="message-time">${m.time}</span>
         </div>
         `;
+
+        //Add voice-on-click behavior
+        div.addEventListener('click', () => {
+            speakText(m.text);
+        });
+
         cont.appendChild(div);
     });
     // scroll to bottom
@@ -103,6 +113,67 @@ function getAvatar(name) {
     return db.contacts.find(c=>c.name===name).avatar;
 }
 
+function waitForVoices() {
+    return new Promise(resolve => {
+        let voices = speechSynthesis.getVoices();
+        if (voices.length) {
+            resolve();
+        } else {
+            speechSynthesis.onvoiceschanged = () => {
+                resolve();
+            };
+        }
+    });
+}
+
+
+function announceUnreadMessages(contacts) {
+    let speechText = "";
+    contacts.forEach(contact => {
+        if (contact.unread != 0) {
+            speechText += `You have ${contact.unread} unread message${contact.unread > 1 ? 's' : ''} from ${contact.name}. `;
+        }
+    });
+
+    if (speechText) {
+        speakText(speechText);
+    } else {
+        speakText("No unread messages, You're all caught up");
+    }
+}
+
+function speakText(text, onComplete) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    utterance.volume = 1;
+
+    utterance.onend = () => {
+        if (typeof onComplete === 'function') {
+            onComplete();
+        }
+    };
+
+    function setVoiceAndSpeak() {
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(voice =>
+            voice.name.includes("Female") || voice.name.includes("Google UK English Female")
+        );
+        if (femaleVoice) {
+            utterance.voice = femaleVoice;
+        }
+        speechSynthesis.speak(utterance);
+    }
+
+    if (speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.onvoiceschanged = () => {
+            setVoiceAndSpeak();
+        };
+    } else {
+        setVoiceAndSpeak();
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Add toggle functionality for mobile menu
@@ -213,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleVoiceCommand(command) {
-        if (command.includes("go to message a")) {
+        if (command.includes("message")) {
             speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it was my cat'");
         }
 
@@ -296,38 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function speakText(text, onComplete) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.7;
-        utterance.pitch = 1.1;
-        utterance.volume = 1;
-
-        utterance.onend = () => {
-            if (typeof onComplete === 'function') {
-                onComplete();
-            }
-        };
-
-        function setVoiceAndSpeak() {
-            const voices = window.speechSynthesis.getVoices();
-            const femaleVoice = voices.find(voice =>
-                voice.name.includes("Female") || voice.name.includes("Google UK English Female")
-            );
-            if (femaleVoice) {
-                utterance.voice = femaleVoice;
-            }
-            speechSynthesis.speak(utterance);
-        }
-
-        if (speechSynthesis.getVoices().length === 0) {
-            speechSynthesis.onvoiceschanged = () => {
-                setVoiceAndSpeak();
-            };
-        } else {
-            setVoiceAndSpeak();
-        }
-    }
+    
 
 
 

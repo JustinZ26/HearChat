@@ -18,21 +18,24 @@
       "avatar": "asset/icon-dummy.png",
       "status": "offline",
       "lastMessage": "I'll be there in 10 minutes.",
-      "time": "6:42 PM"
+      "time": "6:42 PM",
+      "unread": 1
     },
     {
       "name": "Kelra",
       "avatar": "asset/icon-dummy.png",
       "status": "offline",
       "lastMessage": "hello",
-      "time": "6:07 PM"
+      "time": "6:07 PM",
+      "unread": 0
     },
     {
       "name": "JingkoGod",
       "avatar": "asset/icon-dummy.png",
       "status": "offline",
-      "lastMessage": "pha",
-      "time": "6:09 PM"
+      "lastMessage": "I'll check and get back to you.",
+      "time": "6:31 PM",
+      "unread": 0
     }
   ],
   "messages": {
@@ -46,51 +49,6 @@
         "from": "me",
         "text": "Hi Erlangga! I'm doing well…",
         "time": "10:32 AM"
-      },
-      {
-        "from": "me",
-        "text": "ok so this code",
-        "time": "4:57 PM"
-      },
-      {
-        "from": "me",
-        "text": "hi",
-        "time": "4:58 PM"
-      },
-      {
-        "from": "them",
-        "text": "I'll check and get back to you.",
-        "time": "4:58 PM"
-      },
-      {
-        "from": "me",
-        "text": "i think i found the problem",
-        "time": "5:31 PM"
-      },
-      {
-        "from": "me",
-        "text": "hello world",
-        "time": "5:56 PM"
-      },
-      {
-        "from": "me",
-        "text": "hello world",
-        "time": "5:57 PM"
-      },
-      {
-        "from": "them",
-        "text": "Can we discuss this later?",
-        "time": "5:57 PM"
-      },
-      {
-        "from": "me",
-        "text": "hello world",
-        "time": "5:57 PM"
-      },
-      {
-        "from": "them",
-        "text": "Let me think about it.",
-        "time": "5:57 PM"
       }
     ],
     "JingkoisReal": [
@@ -127,6 +85,16 @@
         "from": "me",
         "text": "Hi JingkoGod! I'm doing well…",
         "time": "10:32 AM"
+      },
+      {
+        "from": "me",
+        "text": "hey how is it going",
+        "time": "6:31 PM"
+      },
+      {
+        "from": "them",
+        "text": "I'll check and get back to you.",
+        "time": "6:31 PM"
       }
     ]
   }
