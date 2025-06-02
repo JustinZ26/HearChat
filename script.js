@@ -102,168 +102,6 @@ function renderMessages(name) {
 function getAvatar(name) {
     return db.contacts.find(c=>c.name===name).avatar;
 }
-// -----------------------------------------------------------------------------------------------
-//need fixing ASAP
-let pressTimer;
-
-document.body.addEventListener('mousedown', () => {
-    pressTimer = setTimeout(() => {
-        console.log("Long press detected. Starting voice command...");
-        startListening();
-    }, 1000); // 1 second hold
-});
-
-document.body.addEventListener('mouseup', () => {
-    clearTimeout(pressTimer); // Cancel if released early
-});
-
-document.body.addEventListener('mouseleave', () => {
-    clearTimeout(pressTimer); // Cancel if mouse leaves screen
-});
-
-document.body.addEventListener('touchstart', () => {
-    pressTimer = setTimeout(() => {
-        console.log("Long press detected. Starting voice command...");
-        startListening();
-    }, 1000);
-});
-
-document.body.addEventListener('touchend', () => {
-    clearTimeout(pressTimer);
-});
-
-
-
-let recognition;
-
-function startListening() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return alert("Speech Recognition not supported.");
-
-    recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.continuous = false;
-
-    recognition.onresult = (event) => {
-        const command = event.results[0][0].transcript.toLowerCase();
-        console.log('Command:', command);
-        handleVoiceCommand(command);
-    };
-
-    recognition.onerror = (e) => {
-        console.error("Error:", e.error);
-    };
-
-    recognition.start();
-}
-
-function handleVoiceCommand(command) {
-    if (command.includes("go to message a")) {
-        speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it's my cat'");
-    }
-
-    else if (command.includes("reply")) {
-        speakText("Recording your reply...");
-        startReplyMode();
-    }
-}
-
-function startReplyMode() {
-    recognition && recognition.abort(); // Cancel base recognition
-
-    const replyRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    replyRecognition.lang = 'en-US';
-    replyRecognition.interimResults = false;
-    replyRecognition.continuous = false;
-
-    replyRecognition.onresult = (event) => {
-        const replyText = event.results[0][0].transcript;
-        console.log("Reply captured:", replyText);
-
-        // Stop reply recognition before moving on
-        replyRecognition.stop();
-
-        // Now TTS, then confirm
-        speakText(`Do you want to reply with "${replyText}"? Say yes or no.`, () => {
-            waitForYesNo(replyText);
-        });
-    };
-
-    replyRecognition.onerror = (e) => {
-        console.error("Reply error:", e.error);
-    };
-
-    replyRecognition.onend = () => {
-        console.log("Reply recognition ended.");
-    };
-
-    replyRecognition.start();
-}
-
-
-
-function waitForYesNo(replyText) {
-    const confirmRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    confirmRecog.lang = 'en-US';
-    confirmRecog.interimResults = false;
-    confirmRecog.continuous = false;
-
-    confirmRecog.onresult = (event) => {
-        const answer = event.results[0][0].transcript.toLowerCase();
-        console.log("Confirmation answer:", answer);
-
-        if (answer.includes("yes")) {
-            speakText("Sending reply now");
-            // sendMessageFromVoice(replyText);
-        } else {
-            speakText("Okay, reply cancelled.");
-        }
-    };
-
-    confirmRecog.onerror = (e) => {
-        console.error("Confirmation error:", e.error);
-    };
-
-    confirmRecog.start();
-}
-
-
-
-function speakText(text, onComplete) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.7;
-    utterance.pitch = 1.1;
-    utterance.volume = 1;
-
-    utterance.onend = () => {
-        if (typeof onComplete === 'function') {
-            onComplete();
-        }
-    };
-
-    function setVoiceAndSpeak() {
-        const voices = window.speechSynthesis.getVoices();
-        const femaleVoice = voices.find(voice =>
-            voice.name.includes("Female") || voice.name.includes("Google UK English Female")
-        );
-        if (femaleVoice) {
-            utterance.voice = femaleVoice;
-        }
-        speechSynthesis.speak(utterance);
-    }
-
-    if (speechSynthesis.getVoices().length === 0) {
-        speechSynthesis.onvoiceschanged = () => {
-            setVoiceAndSpeak();
-        };
-    } else {
-        setVoiceAndSpeak();
-    }
-}
-
-
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -317,6 +155,181 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+        // -----------------------------------------------------------------------------------------------
+    //need fixing ASAP
+    let pressTimer;
+
+    document.body.addEventListener('mousedown', () => {
+        pressTimer = setTimeout(() => {
+            console.log("Long press detected. Starting voice command...");
+            startListening();
+        }, 1000); // 1 second hold
+    });
+
+    document.body.addEventListener('mouseup', () => {
+        clearTimeout(pressTimer); // Cancel if released early
+    });
+
+    document.body.addEventListener('mouseleave', () => {
+        clearTimeout(pressTimer); // Cancel if mouse leaves screen
+    });
+
+    document.body.addEventListener('touchstart', () => {
+        pressTimer = setTimeout(() => {
+            console.log("Long press detected. Starting voice command...");
+            startListening();
+        }, 1000);
+    });
+
+    document.body.addEventListener('touchend', () => {
+        clearTimeout(pressTimer);
+    });
+
+
+
+    let recognition;
+
+    function startListening() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return alert("Speech Recognition not supported.");
+
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.continuous = false;
+
+        recognition.onresult = (event) => {
+            const command = event.results[0][0].transcript.toLowerCase();
+            console.log('Command:', command);
+            handleVoiceCommand(command);
+        };
+
+        recognition.onerror = (e) => {
+            console.error("Error:", e.error);
+        };
+
+        recognition.start();
+    }
+
+    function handleVoiceCommand(command) {
+        if (command.includes("go to message a")) {
+            speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it was my cat'");
+        }
+
+        else if (command.includes("reply")) {
+            speakText("Recording your reply...", () => {
+                startReplyMode();
+            });
+        }
+    }
+
+    function startReplyMode() {
+        recognition && recognition.abort(); // Cancel previous recognition
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Your browser doesn't support speech recognition.");
+            return;
+        }
+
+        const replyRecognition = new SpeechRecognition();
+        replyRecognition.lang = 'en-US';
+        replyRecognition.interimResults = false;
+        replyRecognition.maxAlternatives = 1;
+
+        console.log("Listening for your reply...");
+        replyRecognition.start();
+
+        replyRecognition.onresult = (event) => {
+            const replyText = event.results[0][0].transcript;
+            console.log("Reply captured:", replyText);
+
+            speakText(`Do you want to reply with "${replyText}"? Say yes or no.`, () => {
+                waitForYesNo(replyText);
+            });
+        };
+
+        replyRecognition.onerror = (e) => {
+            console.error("Reply error:", e.error);
+            speakText("I couldn't hear your reply, Try again?");
+        };
+
+        replyRecognition.onend = () => {
+            console.log("Reply recognition ended.");
+        };
+    }
+
+    function waitForYesNo(replyText) {
+        const confirmRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        confirmRecog.lang = 'en-US';
+        confirmRecog.interimResults = false;
+        confirmRecog.continuous = false;
+
+        confirmRecog.onresult = (event) => {
+            const answer = event.results[0][0].transcript.toLowerCase();
+            console.log("Confirmation answer:", answer);
+
+            if (answer.includes("yes")) {
+                speakText("Sending reply now");
+
+                // Insert the replyText into the message input
+                const messageInput = document.querySelector('.message-input input');
+                messageInput.value = replyText;
+
+                // Call the sendMessage function
+                sendMessage();
+            } else {
+                speakText("Okay, reply cancelled.");
+            }
+        };
+
+        confirmRecog.onerror = (e) => {
+            console.error("Confirmation error:", e.error);
+        };
+
+        // Delay recognizer slightly to make sure TTS is done and mic is ready
+        setTimeout(() => {
+            console.log("Now listening for yes/no...");
+            confirmRecog.start();
+        }, 300);
+    }
+
+
+    function speakText(text, onComplete) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.7;
+        utterance.pitch = 1.1;
+        utterance.volume = 1;
+
+        utterance.onend = () => {
+            if (typeof onComplete === 'function') {
+                onComplete();
+            }
+        };
+
+        function setVoiceAndSpeak() {
+            const voices = window.speechSynthesis.getVoices();
+            const femaleVoice = voices.find(voice =>
+                voice.name.includes("Female") || voice.name.includes("Google UK English Female")
+            );
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+            speechSynthesis.speak(utterance);
+        }
+
+        if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.onvoiceschanged = () => {
+                setVoiceAndSpeak();
+            };
+        } else {
+            setVoiceAndSpeak();
+        }
+    }
+
+
 
 
     
