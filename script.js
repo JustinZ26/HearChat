@@ -306,6 +306,12 @@ document.addEventListener('DOMContentLoaded', function() {
             speakText("You are currently chatting with " + currentContact);
         }
 
+        else if (command.includes("navigate")) {
+            speakText(`Who do you want to chat with?`, () => {
+                navigate();
+            });
+        }
+
     }
 
     function startReplyMode() {
@@ -378,9 +384,117 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmRecog.start();
         }, 300);
     }
-
-
     
+    function navigate() {
+        const contactRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        contactRecog.lang = 'en-US';
+        contactRecog.interimResults = false;
+        contactRecog.continuous = false;
+
+        contactRecog.onresult = (event) => {
+            const answer = event.results[0][0].transcript.toLowerCase();
+            console.log("contact:", answer);
+
+            let found = false;
+
+            for (const contact of db.contacts) {
+                if (answer.includes(contact.name.toLowerCase())) {
+                    console.log("Matched contact:", contact.name);
+                    selectContact(contact.name);
+                    found = true;
+                    speakText("Successfully entered chat with " + contact.name);
+                    break;
+                }
+            }
+
+            if (!found) {
+                console.log("No matching contact found");
+                speakText("Contact not found! Let's use manual selection.");
+
+                // Start manual mode
+                manualContactSelection();
+            }
+        };
+
+        contactRecog.onerror = (e) => {
+            console.error("Confirmation error:", e.error);
+        };
+
+        setTimeout(() => {
+            console.log("Now listening for contact...");
+            contactRecog.start();
+        }, 300);
+    }
+
+    function manualContactSelection() {
+        // Read out list
+        let listText = "Please choose a contact by number. ";
+        db.contacts.forEach((contact, index) => {
+            listText += (index + 1) + " for " + contact.name + ". ";
+        });
+
+        speakText(listText, () => {
+            // After TTS is done, start listening for number
+            listenForNumber();
+        });
+    }
+
+    function listenForNumber() {
+        const numberRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        numberRecog.lang = 'en-US';
+        numberRecog.interimResults = false;
+        numberRecog.continuous = false;
+
+        numberRecog.onresult = (event) => {
+            const numAnswer = event.results[0][0].transcript.toLowerCase();
+            console.log("number selection:", numAnswer);
+
+            // Extract number (handle words like "one", "two", "three")
+            const spokenNumber = convertSpokenNumber(numAnswer);
+
+            if (spokenNumber >= 1 && spokenNumber <= db.contacts.length) {
+                const selectedContact = db.contacts[spokenNumber - 1];
+                selectContact(selectedContact.name);
+                speakText("Successfully entered chat with " + selectedContact.name);
+            } else {
+                speakText("Invalid number selection.");
+            }
+        };
+
+        numberRecog.onerror = (e) => {
+            console.error("Number recognition error:", e.error);
+        };
+
+        numberRecog.start();
+    }
+
+    // Helper to convert spoken words to numbers
+    function convertSpokenNumber(text) {
+        const map = {
+            "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+            "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10
+        };
+
+        text = text.toLowerCase().trim();
+
+        // Try to find numeric digits first
+        const digitMatch = text.match(/\d+/);
+        if (digitMatch) {
+            return parseInt(digitMatch[0]);
+        }
+
+        // Try to match word-based numbers
+        for (const word in map) {
+            if (text.includes(word)) {
+                return map[word];
+            }
+        }
+
+        return -1; // invalid
+    }
+
+
+        
 
 
 
