@@ -301,6 +301,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 startReplyMode();
             });
         }
+
+        else if (command.includes("who")) {
+            speakText("You are currently chatting with " + currentContact);
+        }
+
     }
 
     function startReplyMode() {
