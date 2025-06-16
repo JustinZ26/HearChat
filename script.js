@@ -2,7 +2,7 @@ let db = { user: {}, contacts: [], messages: {} };
 let currentContact = null;
 
 async function init() {
-    const res = await fetch('/api/get-all-data'); // new API endpoint
+    const res = await fetch('/api/get-all-data');
     db = await res.json();
     renderUserProfile(db.user);
     renderContacts(db.contacts);
@@ -237,8 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-        // -----------------------------------------------------------------------------------------------
-    //need fixing ASAP
     let pressTimer;
 
     document.body.addEventListener('mousedown', () => {

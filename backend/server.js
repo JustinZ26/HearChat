@@ -13,8 +13,8 @@ app.use(express.static(frontendPath));
 const db = mysql.createConnection({
   host: 'localhost',
   port: 3307,
-  user: 'root', // replace with your mysql user
-  password: 'password', // replace with your mysql password
+  user: 'root', 
+  password: 'password', 
   database: 'hearchat'
 });
 
@@ -23,7 +23,7 @@ db.connect((err) => {
     console.error('MySQL connection failed:', err);
     return;
   }
-  console.log('✅ Connected to MySQL database');
+  console.log('Connected to MySQL database');
 });
 
 // API route to handle contact form
@@ -33,9 +33,7 @@ app.post('/api/contact', (req, res) => {
   res.json({ message: 'Contact info received!', data: contactInfo });
 });
 
-// ADD TO YOUR server.js
-
-// 1️⃣ Get All Data (user + contacts)
+// Get All Data (user + contacts)
 app.get('/api/get-all-data', (req, res) => {
     const userQuery = 'SELECT * FROM users LIMIT 1';
     const contactsQuery = 'SELECT * FROM contacts';
@@ -61,7 +59,7 @@ app.get('/api/get-all-data', (req, res) => {
     });
 });
 
-// 2️⃣ Get Messages For Specific Contact
+// Get Messages For Specific Contact
 app.get('/api/get-messages', (req, res) => {
     const contactName = req.query.name;
 
@@ -92,7 +90,7 @@ app.get('/api/get-messages', (req, res) => {
 app.post('/api/save-message', (req, res) => {
   const { to, from, text, time } = req.body;
 
-  // First, get contact id based on name
+  // Get contact id based on name
   db.query('SELECT id FROM contacts WHERE name = ?', [to], (err, results) => {
     if (err || results.length === 0) {
       return res.status(500).send('Contact not found');
