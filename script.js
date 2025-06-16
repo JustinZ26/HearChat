@@ -1,19 +1,17 @@
-let db = null;
+let db = { user: {}, contacts: [], messages: {} };
 let currentContact = null;
 
 async function init() {
-    const res = await fetch('data.json'); // import data from JSON file
+    const res = await fetch('/api/get-all-data');
     db = await res.json();
     renderUserProfile(db.user);
     renderContacts(db.contacts);
     setupContactClicks();
-    // auto‑select first
     if (db.contacts.length) selectContact(db.contacts[0].name);
     
     waitForVoices().then(() => {
         announceUnreadMessages(db.contacts);
     });
-
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -56,12 +54,10 @@ function setupContactClicks() {
         // clear unread badge
         const idx = db.contacts.findIndex(c => c.name === li.dataset.name);
         if (db.contacts[idx].unread) {
-        db.contacts[idx].unread = 0;
-        // update DOM
-        const badge = li.querySelector('.unread');
-        if (badge) badge.remove();
+            db.contacts[idx].unread = 0;
+            const badge = li.querySelector('.unread');
+            if (badge) badge.remove();
         }
-        // active styling
         document.querySelectorAll('.contact').forEach(c=>c.classList.remove('active'));
         li.classList.add('active');
         selectContact(li.dataset.name);
@@ -69,48 +65,38 @@ function setupContactClicks() {
 }
 
 async function selectContact(name) {
-    const res = await fetch('data.json'); // re-fetch data
-    db = await res.json();
-
     currentContact = name;
-    // header
     document.querySelector('.chat-header .contact-info h4').textContent = name;
     const c = db.contacts.find(c => c.name === name);
     const statusEl = document.querySelector('.chat-header .contact-info p');
     statusEl.textContent = c.status === 'online' ? 'Online • Typing...' : c.status;
-
-    renderMessages(name);
+    await loadMessages(name);
 }
 
+async function loadMessages(contactName) {
+    const res = await fetch(`/api/get-messages?name=${encodeURIComponent(contactName)}`);
+    const messages = await res.json();
 
-function renderMessages(name) {
-    const msgs = db.messages[name] || (db.messages[name] = []);
-    const cont = document.querySelector('.chat-messages');
-    cont.innerHTML = '';
-    msgs.forEach(m => {
-        const div = document.createElement('div');
-        div.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
-        div.innerHTML = `
-        ${m.from==='them'? `<div class="message-avatar"><img src="${getAvatar(name)}"></div>`: ''}
-        <div class="message-content">
-            <p>${m.text}</p>
-            <span class="message-time">${m.time}</span>
-        </div>
+    const messagesContainer = document.querySelector('.chat-messages');
+    messagesContainer.innerHTML = '';
+
+    messages.forEach(m => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
+        messageDiv.innerHTML = `
+            ${m.from === 'them' ? `<div class="message-avatar"><img src="${getAvatar(contactName)}"></div>` : ''}
+            <div class="message-content">
+                <p>${m.text}</p>
+                <span class="message-time">${m.time}</span>
+            </div>
         `;
-
-        //Add voice-on-click behavior
-        div.addEventListener('click', () => {
-            speakText(m.text);
+        messageDiv.addEventListener('click', () => { 
+            speakText(m.text); 
         });
-
-        cont.appendChild(div);
+        messagesContainer.appendChild(messageDiv);
     });
-    // scroll to bottom
-    cont.scrollTop = cont.scrollHeight;
-}
 
-function getAvatar(name) {
-    return db.contacts.find(c=>c.name===name).avatar;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function waitForVoices() {
@@ -119,13 +105,37 @@ function waitForVoices() {
         if (voices.length) {
             resolve();
         } else {
-            speechSynthesis.onvoiceschanged = () => {
-                resolve();
+            speechSynthesis.onvoiceschanged = () => { 
+                resolve(); 
             };
         }
     });
 }
 
+// function renderMessages(name) {
+//     const msgs = db.messages[name] || [];
+//     const cont = document.querySelector('.chat-messages');
+//     cont.innerHTML = '';
+//     msgs.forEach(m => {
+//         const div = document.createElement('div');
+//         div.className = 'message ' + (m.from === 'me' ? 'sent' : 'received');
+//         div.innerHTML = `
+//         ${m.from==='them'? `<div class="message-avatar"><img src="${getAvatar(name)}"></div>`: ''}
+//         <div class="message-content">
+//             <p>${m.text}</p>
+//             <span class="message-time">${m.time}</span>
+//         </div>
+//         `;
+//         div.addEventListener('click', () => { 
+//             speakText(m.text); });
+//         cont.appendChild(div);
+//     });
+//     cont.scrollTop = cont.scrollHeight;
+// }
+
+function getAvatar(name) {
+    return db.contacts.find(c=>c.name===name).avatar;
+}
 
 function announceUnreadMessages(contacts) {
     let speechText = "";
@@ -134,13 +144,13 @@ function announceUnreadMessages(contacts) {
             speechText += `You have ${contact.unread} unread message${contact.unread > 1 ? 's' : ''} from ${contact.name}. `;
         }
     });
-
     if (speechText) {
         speakText(speechText);
     } else {
         speakText("No unread messages, You're all caught up");
     }
 }
+
 
 function speakText(text, onComplete) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -227,8 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-        // -----------------------------------------------------------------------------------------------
-    //need fixing ASAP
     let pressTimer;
 
     document.body.addEventListener('mousedown', () => {
@@ -379,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function sendMessage() {
         const messageText = messageInput.value.trim();
+        console.log('sending message ' + messageText)
         if (messageText) {
             // Create new message element
             const messagesContainer = document.querySelector('.chat-messages');
@@ -422,14 +431,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     time: timeString
                 })
             });
+            console.log('successfully sent to database')
 
             // Re-fetch updated data & re-render messages
-            const res = await fetch('data.json');
-            db = await res.json();
-            renderMessages(currentContact);
-            
+            await loadMessages(currentContact);
+            messageInput.value = '';
+            // renderMessages(currentContact);
+
+            console.log('successfully refetch the chatroom')
             // Simulate reply after 1-2 seconds
             setTimeout(simulateReply, Math.random() * 1000 + 1000);
+            console.log('called simulateReply')
         }
     }
     
@@ -449,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Simulate reply from the active contact
     async function simulateReply() {
+        console.log("Simulating reply...");
         const replies = [
             "That sounds great!",
             "I'll check and get back to you.",
@@ -468,15 +481,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (messagesContainer && activeContact) {
             const contactAvatar = activeContact.querySelector('img').src;
-            
-            // Get current time
+
             const now = new Date();
             const hours = now.getHours() % 12 || 12;
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
             const timeString = `${hours}:${minutes} ${ampm}`;
             
-            // Create new message element
             const newMessage = document.createElement('div');
             newMessage.className = 'message received';
             newMessage.innerHTML = `
@@ -489,31 +500,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // Add message to chat
             messagesContainer.appendChild(newMessage);
-            
-            // Scroll to bottom of chat
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Send message to backend API
-            await fetch('/api/save-message-reply', {
+            await fetch('/api/save-message', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    from: currentContact,
+                    to: currentContact,
+                    from: 'them', 
                     text: randomReply,
                     time: timeString
                 })
             });
+            console.log('successfully saved ' + randomReply)
 
-            // Re-fetch updated data & re-render messages
-            const res = await fetch('data.json');
-            db = await res.json();
-            renderMessages(currentContact);
+            await loadMessages(currentContact);
+            // renderMessages(currentContact);
         }
     }
+
     
     // Attachment button functionality
     const attachmentBtn = document.querySelector('.input-actions .action-btn:first-child');
