@@ -628,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('successfully refetch the chatroom')
             // Simulate reply after 1-2 seconds
-            setTimeout(simulateReply, Math.random() * 1000 + 1000);
+            setTimeout(simulateReply, Math.random() * 1000 + 2000);
             console.log('called simulateReply')
         }
     }
@@ -704,6 +704,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('successfully saved ' + randomReply)
 
             await loadMessages(currentContact);
+            speakText(currentContact + "responded") // instant TTS
+            sleep(250)
+            speakText(randomReply)
             // renderMessages(currentContact);
         }
     }
