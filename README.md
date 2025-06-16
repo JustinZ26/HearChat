@@ -5,7 +5,9 @@ Messaging app designed for visually impaired user
 ## Tech Stack
 
 **Frontend:** HTML, CSS, JS
+
 **Backend:** Node.js, Express
+
 **Database:** Microsoft MySQL
 
 
@@ -18,4 +20,5 @@ Messaging app designed for visually impaired user
 
 ## Future's Work:
 
-1. **More command:** simply more voice activated command to change room, check who is the other party, call or message the other party, and many more
+1. **More command:** simply add more voice activated command to change room, check who is the other party, call or message the other party, and many more
+2. **Add TTS and ASR Model:** Currently we still depend on the avaiable web model which might not be avaiable in all browser or devices, by implementing our own model we can make the app more stable and usable by all users
