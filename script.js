@@ -292,8 +292,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleVoiceCommand(command) {
-        if (command.includes("message")) {
-            speakText("At 10 AM, A sent 'I love you'. At 10:01 AM, A sent 'sorry it was my cat'");
+        if (command.includes("test")) {
+            const funnyResponses = [
+                "Testing testing... one two three...",
+                "Mic check complete!",
+                "System online. All modules functional.",
+                "Beep boop beep...",
+                "System test passed!",
+                "Boat goes binted",
+                "Wooden shovel"
+            ];
+
+            const randomResponse = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+            speakText(randomResponse);
         }
 
         else if (command.includes("reply")) {
@@ -311,6 +322,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigate();
             });
         }
+
+        else if (command.includes("read")) {
+            speakText(`How many last message you want to read`, () => {
+                readMessage();
+            });
+        }
+
+
 
     }
 
@@ -494,7 +513,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-        
+    function readMessage() {
+        const numberRecog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        numberRecog.lang = 'en-US';
+        numberRecog.interimResults = false;
+        numberRecog.continuous = false;
+
+        numberRecog.onresult = async (event) => {
+            const numAnswer = event.results[0][0].transcript.toLowerCase();
+            console.log("Read message count selection:", numAnswer);
+
+            const spokenNumber = convertSpokenNumber(numAnswer);
+
+            if (spokenNumber >= 1 && spokenNumber <= 10) {
+                speakText(`Reading last ${spokenNumber} messages with ${currentContact}`);
+                await readLastMessages(spokenNumber);
+            } else {
+                speakText("Invalid number. Please say a number between 1 and 10.");
+            }
+        };
+
+        numberRecog.onerror = (e) => {
+            console.error("Number recognition error:", e.error);
+        };
+
+        numberRecog.start();
+    }
+
+    async function readLastMessages(count) {
+        try {
+            const res = await fetch(`/api/get-messages?name=${encodeURIComponent(currentContact)}`);
+            const messages = await res.json();
+
+            const lastMessages = messages.slice(-count);
+
+            for (const message of lastMessages) {
+                let who = (message.from === 'me') ? "you said" : currentContact+'said';
+                const timeText = message.time;
+
+                speakText(`At ${timeText}, ${who}: ${message.text}`);
+                await sleep(1500);
+            }
+        } catch (err) {
+            console.error(err);
+            speakText("Failed to load messages.");
+        }
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
 
 
 
