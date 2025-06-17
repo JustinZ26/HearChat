@@ -9,9 +9,9 @@ async function init() {
     setupContactClicks();
     if (db.contacts.length) selectContact(db.contacts[0].name);
     
-    waitForVoices().then(() => {
-        announceUnreadMessages(db.contacts);
-    });
+    // waitForVoices().then(() => {
+    //     announceUnreadMessages(db.contacts);
+    // }); 
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -238,32 +238,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     let pressTimer;
+    let startX, startY;
+    const movementThreshold = 10; // pixels – adjust as needed
 
-    document.body.addEventListener('mousedown', () => {
-        pressTimer = setTimeout(() => {
-            console.log("Long press detected. Starting voice command...");
-            startListening();
-        }, 1000); // 1 second hold
-    });
-
-    document.body.addEventListener('mouseup', () => {
-        clearTimeout(pressTimer); // Cancel if released early
-    });
-
-    document.body.addEventListener('mouseleave', () => {
-        clearTimeout(pressTimer); // Cancel if mouse leaves screen
-    });
-
-    document.body.addEventListener('touchstart', () => {
+    // Mouse (desktop)
+    document.body.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
         pressTimer = setTimeout(() => {
             console.log("Long press detected. Starting voice command...");
             startListening();
         }, 1000);
     });
 
+    document.body.addEventListener('mousemove', (e) => {
+        if (Math.abs(e.clientX - startX) > movementThreshold || 
+            Math.abs(e.clientY - startY) > movementThreshold) {
+            clearTimeout(pressTimer); // Cancel if moved too much
+        }
+    });
+
+    document.body.addEventListener('mouseup', () => {
+        clearTimeout(pressTimer);
+    });
+    document.body.addEventListener('mouseleave', () => {
+        clearTimeout(pressTimer);
+    });
+
+    // Touch (mobile)
+    document.body.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+
+        pressTimer = setTimeout(() => {
+            console.log("Long press detected. Starting voice command...");
+            startListening();
+        }, 100);
+    });
+
+    document.body.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        if (Math.abs(touch.clientX - startX) > movementThreshold || 
+            Math.abs(touch.clientY - startY) > movementThreshold) {
+            clearTimeout(pressTimer); // Cancel if moved too much
+        }
+    });
+
     document.body.addEventListener('touchend', () => {
         clearTimeout(pressTimer);
     });
+
 
 
 
@@ -313,6 +338,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        else if (command.includes("unread")) {
+            announceUnreadMessages(db.contacts);
+        }
+
         else if (command.includes("who")) {
             speakText("You are currently chatting with " + currentContact);
         }
@@ -323,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        else if (command.includes("read")) {
+        else if (command.includes("message")) {
             speakText(`How many last message you want to read`, () => {
                 readMessage();
             });
