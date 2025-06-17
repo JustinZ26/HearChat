@@ -13,7 +13,7 @@
 
 ## Current Features
 
-1. **Hold to voice command:** User can hold anywhere on the screen for 1 seconds, the app will run voice recognition command that will record the user's command. currently, the avaiable command are:
+1. **Hold to voice command:** User can hold anywhere on the screen for 1 seconds, the app will run voice recognition command that will record the user's command. currently, the available commands are:
   - **"reply"** — send a message.
   - **"unread"** — announce the number of unread messages.
   - **"who"** — identify the who is the other party.
@@ -26,6 +26,6 @@
 
 ## Future's Work
 
-1. **More command:** add more voice activated command to call or video call a person, check their user profile, etc
-2. **Add TTS and ASR Model:** currently we still depend on the avaiable web model which might not be avaiable in all browser or devices, by implementing our own model we can make the app more stable and usable by all users
-3. **Other media:** upgrade our app so it can support attachment like picture, video, voice message, and other files
+1. **More command:** add more voice activated command to call or video call a person, check their user profile, and many more
+2. **Add TTS and ASR Model:** currently we still depend on the available web model which might not be available in all browser or devices, by implementing our own model we can make the app more stable and usable by all users and devices
+3. **Other media:** upgrade our app so it can support attachment like picture, video, voice message, and other files such as .pdf and .doc
