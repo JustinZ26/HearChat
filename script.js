@@ -168,7 +168,7 @@ function speakText(text, onComplete) {
     function setVoiceAndSpeak() {
         const voices = window.speechSynthesis.getVoices();
         const femaleVoice = voices.find(voice =>
-            voice.name.includes("Female") || voice.name.includes("Google UK English Female")
+            voice.name.includes("Female") || voice.name.includes("Google UK English Female") || voice.name.includes("Jenny") || voice.name.includes("Microsoft Zira") 
         );
         if (femaleVoice) {
             utterance.voice = femaleVoice;
